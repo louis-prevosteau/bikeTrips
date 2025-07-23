@@ -27,10 +27,6 @@ export class UsersService {
     return this.userModel.findOneAndUpdate(filter, updateUserDto);
   }
 
-  resetPassword(filter, updatePasswordDto: any) {
-    return this.userModel.findOneAndUpdate(filter, updatePasswordDto);
-  }
-
   remove(filter) {
     return this.userModel.findOneAndDelete(filter);
   }
