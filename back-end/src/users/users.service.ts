@@ -16,15 +16,55 @@ export class UsersService {
   }
 
   findAll(filter = {}) {
-    return this.userModel.find(filter);
+    return this.userModel.find(filter).populate([
+      { path: 'followers', select: '-password' },
+      { path: 'followings', select: '-password' },
+    ]);
   }
 
   findOne(filter) {
-    return this.userModel.findOne(filter);
+    return this.userModel.findOne(filter).populate([
+      { path: 'followers', select: '-password' },
+      { path: 'followings', select: '-password' },
+    ]);
   }
 
   update(filter, updateUserDto: UpdateUserDto) {
     return this.userModel.findOneAndUpdate(filter, updateUserDto);
+  }
+
+  async followUser(userId: string, userToFollowId: string) {
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $addToSet: { followings: userToFollowId } },
+    );
+
+    await this.userModel.updateOne(
+      { _id: userToFollowId },
+      { $addToSet: { followers: userId } },
+    );
+
+    return this.userModel.findById(userId).populate([
+      { path: 'followings', select: '-password' },
+      { path: 'followers', select: '-password' },
+    ]);
+  }
+
+  async unfollowUser(userId: string, userToFollowId: string) {
+    await this.userModel.updateOne(
+      { _id: userId },
+      { $pull: { followings: userToFollowId } },
+    );
+
+    await this.userModel.updateOne(
+      { _id: userToFollowId },
+      { $pull: { followers: userId } },
+    );
+
+    return this.userModel.findById(userId).populate([
+      { path: 'followings', select: '-password' },
+      { path: 'followers', select: '-password' },
+    ]);
   }
 
   remove(filter) {
