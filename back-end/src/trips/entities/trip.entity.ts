@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { StepSchema, Step } from './step.entity';
-import { HydratedDocument, SchemaTypes } from 'mongoose';
+import mongoose, { HydratedDocument, SchemaTypes } from 'mongoose';
 import { User } from 'src/users/entities/user.entity';
 
 export type TripDocument = HydratedDocument<Trip>;
@@ -33,6 +33,12 @@ export class Trip {
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
   user: User;
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    default: [],
+  })
+  likedBy: User[];
 }
 
 export const TripSchema = SchemaFactory.createForClass(Trip);

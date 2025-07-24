@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
+import { Trip } from 'src/trips/entities/trip.entity';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -24,16 +25,22 @@ export class User {
   password: string;
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: User.name }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   })
   followers: User[];
 
   @Prop({
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: User.name }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     default: [],
   })
   followings: User[];
+
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Trip' }],
+    default: [],
+  })
+  favoriteTrips: Trip[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

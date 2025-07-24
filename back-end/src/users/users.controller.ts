@@ -34,15 +34,15 @@ export class UsersController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Patch('follow')
-  async follow(@User() user, @Body('userToFollow') userToFollow: string) {
-    return this.usersService.followUser(user._id, userToFollow);
+  @Patch(':id/follow')
+  async follow(@User() user, @Param('id') id: string) {
+    return this.usersService.followUser(user._id, id);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Patch('unfollow')
-  async unfollow(@User() user, @Body('userToUnfollow') userToUnfollow: string) {
-    return this.usersService.unfollowUser(user._id, userToUnfollow);
+  @Patch(':id/unfollow')
+  async unfollow(@User() user, @Param('id') id: string) {
+    return this.usersService.unfollowUser(user._id, id);
   }
 
   @UseGuards(AuthGuard('jwt'))

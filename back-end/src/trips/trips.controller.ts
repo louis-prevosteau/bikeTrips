@@ -56,4 +56,16 @@ export class TripsController {
   remove(@Param('id') id: string) {
     return this.tripsService.remove({ _id: id });
   }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(':id/like')
+  async like(@Param('id') id: string, @User() user) {
+    return this.tripsService.likeTrip(id, user._id);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch(':id/unlike')
+  async unlike(@Param('id') id: string, @User() user) {
+    return this.tripsService.unlikeTrip(id, user._id);
+  }
 }
