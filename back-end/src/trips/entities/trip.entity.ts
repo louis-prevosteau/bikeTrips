@@ -16,6 +16,9 @@ export class Trip {
   @Prop({ type: Date, required: true })
   date: Date;
 
+  @Prop({ type: [String], default: [] })
+  photos: string[];
+
   @Prop({ type: [StepSchema], required: true })
   steps: Step[];
 

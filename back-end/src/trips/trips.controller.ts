@@ -8,12 +8,16 @@ import {
   Delete,
   Query,
   UseGuards,
+  UploadedFiles,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { User } from 'src/users/users.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { storageConfig } from './storage.helper';
 
 @Controller('trips')
 export class TripsController {
@@ -21,7 +25,26 @@ export class TripsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createTripDto: CreateTripDto, @User() user) {
+  @UseInterceptors(
+    FilesInterceptor('photos', 10, {
+      storage: storageConfig(),
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+          return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  create(
+    @Body() createTripDto: CreateTripDto,
+    @User() user,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    if (files?.length) {
+      createTripDto.photos = files.map((file) => file.filename);
+    }
+
     return this.tripsService.create({ ...createTripDto, user });
   }
 
@@ -47,7 +70,26 @@ export class TripsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTripDto: UpdateTripDto) {
+  @UseInterceptors(
+    FilesInterceptor('photos', 10, {
+      storage: storageConfig(),
+      fileFilter: (req, file, cb) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+          return cb(new Error('Only image files are allowed!'), false);
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  update(
+    @Param('id') id: string,
+    @Body() updateTripDto: UpdateTripDto,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    if (files?.length) {
+      updateTripDto.photos = files.map((file) => file.filename);
+    }
+
     return this.tripsService.update({ _id: id }, updateTripDto);
   }
 
