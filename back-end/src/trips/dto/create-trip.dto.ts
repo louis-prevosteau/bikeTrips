@@ -3,6 +3,7 @@ import { IsOptional, IsString, IsArray } from 'class-validator';
 
 export class CreateTripDto {
   readonly title: string;
+  readonly profile: string;
   readonly description?: string;
   readonly date: Date;
   readonly steps: StepDto[];

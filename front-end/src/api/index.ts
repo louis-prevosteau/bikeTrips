@@ -27,3 +27,19 @@ export const updateProfile = (data: UpdateUser) => api.patch('users/profile', da
 export const deleteProfile = () => api.delete('users/profile');
 export const followUser = (id: string) => api.patch(`users/${id}/follow`);
 export const unfollowUser = (id: string) => api.patch(`users/${id}/unfollow`);
+
+export const getORSRoute = (profile: string, waypoints: string[][]) => {
+  return axios.post(
+    `https://api.openrouteservice.org/v2/directions/cycling-${profile}/geojson`,
+    {
+      coordinates: waypoints.map(([lat, lng]) => [parseFloat(lng), parseFloat(lat)]),
+      elevation: true,
+    },
+    {
+      headers: {
+        'Authorization': process.env.REACT_APP_ORS_API_KEY,
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+};

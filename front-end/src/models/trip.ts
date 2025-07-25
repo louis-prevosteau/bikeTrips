@@ -1,5 +1,6 @@
 export interface CreateTrip {
     title: string;
+    profile: string;
     description?: string;
     date: Date;
     steps: Step[];

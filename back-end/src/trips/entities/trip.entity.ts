@@ -10,6 +10,9 @@ export class Trip {
   @Prop({ required: true })
   title: string;
 
+  @Prop({ required: true, enum: ['road', 'mountain'] })
+  profile: string;
+
   @Prop()
   description?: string;
 
