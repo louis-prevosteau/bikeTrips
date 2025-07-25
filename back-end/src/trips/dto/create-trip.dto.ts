@@ -13,6 +13,6 @@ export class CreateTripDto {
   readonly distance: number;
   readonly elevationGain: number;
   readonly elevationLoss: number;
-  readonly time?: Date;
+  readonly time?: number;
   readonly user: string;
 }

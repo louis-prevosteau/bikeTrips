@@ -31,8 +31,8 @@ export class Trip {
   @Prop({ type: Number, required: true })
   elevationLoss: number;
 
-  @Prop({ type: Date })
-  time?: Date;
+  @Prop()
+  time?: number;
 
   @Prop({ type: SchemaTypes.ObjectId, ref: 'User' })
   user: User;

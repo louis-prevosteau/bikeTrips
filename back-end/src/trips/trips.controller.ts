@@ -26,7 +26,7 @@ export class TripsController {
   @UseGuards(AuthGuard('jwt'))
   @Post()
   @UseInterceptors(
-    FilesInterceptor('photos', 10, {
+    FilesInterceptor('photos', null, {
       storage: storageConfig(),
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
@@ -56,9 +56,11 @@ export class TripsController {
   ) {
     const pageNum = Math.max(1, parseInt(page) || 1);
     const limitNum = Math.min(100, parseInt(limit) || 15);
-    const { page: _p, limit: _l, search, ...filter } = query;
+    const { page: _p, limit: _l, search, user, ...filter } = query;
     if (search) {
       filter.title = { $regex: search, $options: 'i' };
+    } else if (user) {
+      filter.user = user;
     }
     return this.tripsService.findAll(filter, pageNum, limitNum);
   }
@@ -71,7 +73,7 @@ export class TripsController {
   @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
   @UseInterceptors(
-    FilesInterceptor('photos', 10, {
+    FilesInterceptor('photos', null, {
       storage: storageConfig(),
       fileFilter: (req, file, cb) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {

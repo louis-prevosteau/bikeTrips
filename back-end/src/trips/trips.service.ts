@@ -42,8 +42,13 @@ export class TripsService {
     return this.tripModel.findOneAndUpdate(filter, updateTripDto);
   }
 
-  remove(filter) {
-    return this.tripModel.findOneAndDelete(filter);
+  async remove(filter) {
+    const trip = await this.tripModel.findOne(filter);
+    await this.userModel.updateMany(
+      { favoriteTrips: trip._id },
+      { $pull: { favoriteTrips: trip._id } },
+    );
+    return this.tripModel.findOneAndDelete({ _id: trip._id });
   }
 
   async likeTrip(trip: string, user: string) {
