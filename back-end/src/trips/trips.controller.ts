@@ -15,15 +15,15 @@ import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { User } from 'src/users/users.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from './storage.helper';
+import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 
 @Controller('trips')
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Post()
   @UseInterceptors(
     FilesInterceptor('photos', null, {
@@ -70,7 +70,7 @@ export class TripsController {
     return this.tripsService.findOne({ _id: id });
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(
     FilesInterceptor('photos', null, {
@@ -95,19 +95,19 @@ export class TripsController {
     return this.tripsService.update({ _id: id }, updateTripDto);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tripsService.remove({ _id: id });
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/like')
   async like(@Param('id') id: string, @User() user) {
     return this.tripsService.likeTrip(id, user._id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/unlike')
   async unlike(@Param('id') id: string, @User() user) {
     return this.tripsService.unlikeTrip(id, user._id);

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { CreateTrip, GetTripsParams, Login, Register, UpdateUser } from '../models';
+import type { Register, Login, GetTripsParams, CreateTrip, UpdateUser } from '../models';
 const api = axios.create({
     baseURL: process.env.REACT_APP_API_URL,
 });

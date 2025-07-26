@@ -11,18 +11,18 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import * as fs from 'fs';
+import { JwtAuthGuard } from 'src/authentication/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@User() user) {
     return this.usersService.findOne({ _id: user._id });
@@ -33,7 +33,7 @@ export class UsersController {
     return this.usersService.findOne({ _id: id });
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(
     FileInterceptor('avatar', {
       storage: diskStorage({
@@ -74,19 +74,19 @@ export class UsersController {
     return this.usersService.update({ _id: user._id }, updatedData);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/follow')
   async follow(@User() user, @Param('id') id: string) {
     return this.usersService.followUser(user._id, id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Patch(':id/unfollow')
   async unfollow(@User() user, @Param('id') id: string) {
     return this.usersService.unfollowUser(user._id, id);
   }
 
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @Delete('profile')
   remove(@User() user) {
     return this.usersService.remove({ _id: user._id });
