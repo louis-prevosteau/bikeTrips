@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TripsService } from './trips.service';
 import { TripsController } from './trips.controller';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,7 +12,7 @@ import { User, UserSchema } from 'src/users/entities/user.entity';
       { name: Trip.name, schema: TripSchema },
       { name: User.name, schema: UserSchema },
     ]),
-    UsersModule,
+    forwardRef(() => UsersModule),
   ],
   controllers: [TripsController],
   providers: [TripsService],

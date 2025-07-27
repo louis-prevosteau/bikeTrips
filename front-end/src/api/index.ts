@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Register, Login, GetTripsParams, CreateTrip, UpdateUser } from '../models';
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: import.meta.env.VITE_BACK_END_URL,
 });
 
 api.interceptors.request.use((req) => {
@@ -37,7 +37,7 @@ export const getORSRoute = (profile: string, waypoints: string[][]) => {
     },
     {
       headers: {
-        'Authorization': process.env.REACT_APP_ORS_API_KEY,
+        'Authorization': import.meta.env.VITE_ORS_API_KEY,
         'Content-Type': 'application/json',
       },
     }

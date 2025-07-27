@@ -1,6 +1,6 @@
 import * as api from "../../api";
 import { handleError } from "../../utils/toasts";
-import { GET_USER, type AppDispatch } from "..";
+import { GET_PROFILE, GET_USER, type AppDispatch } from "..";
 import type { UpdateUser } from "../../models";
 
 export const getUser = (id: string) => async (dispatch: AppDispatch) => {
@@ -19,7 +19,7 @@ export const getProfile = () => async (dispatch: AppDispatch) => {
   try {
     const { data } = await api.getProfile();
     dispatch({
-      type: GET_USER,
+      type: GET_PROFILE,
       payload: data,
     });
   } catch (error) {
@@ -31,7 +31,7 @@ export const updateProfile = (userData: UpdateUser) => async (dispatch: AppDispa
   try {
     const { data } = await api.updateProfile(userData);
     dispatch({
-      type: GET_USER,
+      type: GET_PROFILE,
       payload: data,
     });
   } catch (error) {
