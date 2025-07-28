@@ -18,8 +18,7 @@ import {
   Avatar,
   Tooltip,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import SearchIcon from "@mui/icons-material/Search";
+import { AccountCircle, Menu as MenuIcon, Search } from "@mui/icons-material";
 import { lightGreen } from "@mui/material/colors";
 
 export const Header = () => {
@@ -57,112 +56,106 @@ export const Header = () => {
     <AppBar position="fixed" sx={{ backgroundColor: lightGreen[700] }}>
       <Toolbar />
       <Container maxWidth="xl">
-        <Toolbar
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 2,
-            flexWrap: "nowrap",
-            overflowX: "auto", // évite que ça déborde
-          }}
-        >
-          {/* Logo */}
-          <Typography
-            variant="h6"
-            noWrap
-            onClick={() => navigate("/")}
-            sx={{ cursor: "pointer", fontWeight: 700 }}
-          >
-            MonLogo
-          </Typography>
-
-          {/* Menu (desktop & mobile adapté) */}
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            {/* Mobile burger menu */}
-            <Box sx={{ display: { xs: "flex", md: "none" } }}>
-              <IconButton onClick={handleOpenNavMenu} color="inherit">
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                anchorEl={anchorElNav}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-              >
-                {pages.map((page) => (
-                  <MenuItem
-                    key={page.label}
-                    onClick={() => {
-                      navigate(page.path);
-                      handleCloseNavMenu();
-                    }}
-                  >
-                    {page.label}
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-
-            {/* Desktop links */}
-            <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
-              {pages.map((page) => (
-                <Button
-                  key={page.label}
-                  onClick={() => navigate(page.path)}
-                  sx={{ color: "white" }}
-                >
-                  {page.label}
-                </Button>
-              ))}
-            </Box>
-          </Box>
-
-          {/* Search bar */}
+        <Toolbar disableGutters>
           <Box
             sx={{
               display: "flex",
+              flexDirection: { xs: "column", sm: "row" }, // colonne sur mobile
               alignItems: "center",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              borderRadius: 1,
-              px: 1.5,
-              py: 0.5,
-              flexGrow: 1,
-              maxWidth: 400,
+              justifyContent: { xs: "center", sm: "space-between" },
+              width: "100%",
+              gap: { xs: 1.5, sm: 2 },
+              p: 1,
             }}
           >
-            <SearchIcon sx={{ mr: 1 }} />
-            <InputBase
-              placeholder={"Rechercher…"}
-              sx={{ color: "inherit", width: "100%" }}
+            {/* Logo */}
+            <Box
+              component="img"
+              src="./logo.png"
+              alt="logo"
+              sx={{
+                height: 150,
+              }}
             />
-          </Box>
 
-          {/* Profil (connexion/avatar) */}
-          <Box>
-            {isAuth && profile ? (
-              <>
-                <Tooltip title="Mon compte">
-                  <IconButton onClick={handleOpenUserMenu}>
-                    <Avatar alt={profile.username} src={profile.avatarUrl} />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  anchorEl={anchorElUser}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  <MenuItem onClick={() => navigate("/profile")}>
-                    {"Profil"}
-                  </MenuItem>
-                  <MenuItem onClick={handleLogout}>{"Déconnexion"}</MenuItem>
-                </Menu>
-              </>
-            ) : (
-              <Button onClick={() => navigate("/login")} color="inherit">
-                {"Connexion"}
-              </Button>
-            )}
+            {/* Menu */}
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              {/* Mobile burger menu */}
+              <Box sx={{ display: { xs: "flex", md: "none" } }}>
+                <IconButton onClick={handleOpenNavMenu} color="inherit">
+                  <MenuIcon />
+                </IconButton>
+              </Box>
+
+              {/* Desktop */}
+              <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
+                {pages.map((page) => (
+                  <Button
+                    key={page.label}
+                    onClick={() => navigate(page.path)}
+                    sx={{ color: "white" }}
+                  >
+                    {page.label}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
+
+            {/* Barre de recherche */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                borderRadius: 1,
+                px: 1.5,
+                py: 0.5,
+                width: { xs: "100%", sm: "auto" },
+                maxWidth: 400,
+              }}
+            >
+              <Search sx={{ mr: 1 }} />
+              <InputBase
+                placeholder="Rechercher…"
+                sx={{ color: "inherit", width: "100%" }}
+              />
+            </Box>
+
+            {/* Profil */}
+            <Box>
+              {isAuth && profile ? (
+                <>
+                  <Tooltip title="Mon compte">
+                    <IconButton onClick={handleOpenUserMenu}>
+                      {profile.avatar ? (
+                        <Avatar
+                          alt={profile.username}
+                          src={`${
+                            import.meta.env.VITE_BACK_END_URL
+                          }uploads/profile-pictures/${profile.avatar}`}
+                        />
+                      ) : (
+                        <AccountCircle />
+                      )}
+                    </IconButton>
+                  </Tooltip>
+                  <Menu
+                    anchorEl={anchorElUser}
+                    open={Boolean(anchorElUser)}
+                    onClose={handleCloseUserMenu}
+                  >
+                    <MenuItem onClick={() => navigate("/profile")}>
+                      Profil
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
+                  </Menu>
+                </>
+              ) : (
+                <Button onClick={() => navigate("/login")} color="inherit">
+                  Connexion
+                </Button>
+              )}
+            </Box>
           </Box>
         </Toolbar>
       </Container>
