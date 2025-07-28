@@ -1,0 +1,11 @@
+{
+  "components": {
+    "header": {
+      "trips": "Itinéraires",
+      "search": "Rechercher...",
+      "account": "Mon compte",
+      "logout": "Se Déconnecter",
+      "login": "Se Connecter"
+    }
+  }
+}

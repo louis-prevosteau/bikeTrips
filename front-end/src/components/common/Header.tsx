@@ -8,7 +8,6 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
   Box,
   Menu,
   MenuItem,
@@ -25,11 +24,13 @@ export const Header = () => {
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { isAuth, profile } = useSelector((state: RootState) => state);
 
-  const pages = [{ label: "Accueil", path: "/" }];
+  const pages = [{ label: t('components.header.trips'), path: "/" }];
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -116,7 +117,7 @@ export const Header = () => {
             >
               <Search sx={{ mr: 1 }} />
               <InputBase
-                placeholder="Rechercher…"
+                placeholder={t('components.header.search')}
                 sx={{ color: "inherit", width: "100%" }}
               />
             </Box>
@@ -125,7 +126,7 @@ export const Header = () => {
             <Box>
               {isAuth && profile ? (
                 <>
-                  <Tooltip title="Mon compte">
+                  <Tooltip title={t('components.header.account')}>
                     <IconButton onClick={handleOpenUserMenu}>
                       {profile.avatar ? (
                         <Avatar
@@ -145,14 +146,14 @@ export const Header = () => {
                     onClose={handleCloseUserMenu}
                   >
                     <MenuItem onClick={() => navigate("/profile")}>
-                      Profil
+                      {t('components.header.account')}
                     </MenuItem>
-                    <MenuItem onClick={handleLogout}>Déconnexion</MenuItem>
+                    <MenuItem onClick={handleLogout}>{t('components.header.logout')}</MenuItem>
                   </Menu>
                 </>
               ) : (
                 <Button onClick={() => navigate("/login")} color="inherit">
-                  Connexion
+                  {t('components.header.login')}
                 </Button>
               )}
             </Box>

@@ -15,6 +15,7 @@ import { Header } from "./components";
 import type { AppDispatch } from "./redux";
 import { useDispatch } from "react-redux";
 import { getProfile } from "./redux/users/users.actions";
+import './i18n';
 
 const App = () => {
   const isInitialRender = useRef(true);
