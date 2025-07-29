@@ -1,34 +1,44 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
-import type { AppDispatch, RootState } from "../../redux";
-import { logout } from "../../redux/auth/auth.actions";
 import {
   AppBar,
   Toolbar,
   IconButton,
   Box,
-  Menu,
-  MenuItem,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
   Container,
   Button,
   InputBase,
   Avatar,
   Tooltip,
   Typography,
+  Divider,
 } from "@mui/material";
+
 import {
   AccountCircle,
   Add,
   Login,
   Menu as MenuIcon,
   Search,
+  Map,
+  Logout,
+  Person,
 } from "@mui/icons-material";
+
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import type { AppDispatch, RootState } from "../../redux";
+import { logout } from "../../redux/auth/auth.actions";
 import { lightGreen } from "@mui/material/colors";
 
 export const Header = () => {
-  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
   const { t } = useTranslation();
@@ -36,73 +46,79 @@ export const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isAuth, profile } = useSelector((state: RootState) => state);
 
-  const pages = [{ label: t("components.header.trips"), path: "/trips" }];
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
 
   const handleLogout = () => {
     dispatch(logout());
-    handleCloseUserMenu();
+    setMobileOpen(false);
   };
 
+  const pages = [
+    { label: t("components.header.trips"), path: "/trips", icon: <Map /> },
+  ];
+
+  const drawer = (
+    <Box sx={{ width: 250 }} role="presentation" onClick={handleDrawerToggle}>
+      <List>
+        {pages.map((item) => (
+          <ListItem key={item.path} disablePadding>
+            <ListItemButton onClick={() => navigate(item.path)}>
+              <ListItemIcon sx={{ color: lightGreen[700] }}>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.label} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        <Divider />
+        {!isAuth ? (
+          <ListItem disablePadding>
+            <ListItemButton onClick={() => navigate("/login")}>
+              <ListItemIcon sx={{ color: lightGreen[700] }}>
+                <Login />
+              </ListItemIcon>
+              <ListItemText primary={t("components.header.login")} />
+            </ListItemButton>
+          </ListItem>
+        ) : (
+          <>
+            <ListItem disablePadding>
+              <ListItemButton onClick={() => navigate("/profile")}>
+                <ListItemIcon>
+                  <Person />
+                </ListItemIcon>
+                <ListItemText primary={t("components.header.account")} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLogout}>
+                <ListItemIcon>
+                  <Logout />
+                </ListItemIcon>
+                <ListItemText primary={t("components.header.logout")} />
+              </ListItemButton>
+            </ListItem>
+          </>
+        )}
+      </List>
+    </Box>
+  );
+
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: lightGreen[700] }}>
-      <Toolbar />
-      <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-              flexWrap: "nowrap",
-              overflowX: "auto",
-              gap: 1,
-              p: 1,
-            }}
-          >
-            {/* Menu burger (mobile) */}
-            <Box sx={{ display: { xs: "flex", md: "none" }, flexShrink: 0 }}>
-              <IconButton onClick={handleOpenNavMenu} color="inherit">
+    <>
+      <AppBar position="fixed" sx={{ backgroundColor: lightGreen[700] }}>
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ px: 1, gap: 1 }}>
+            {/* Burger menu */}
+            <Box sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+              >
                 <MenuIcon />
               </IconButton>
-              <Menu
-                id="navbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                transformOrigin={{ vertical: "top", horizontal: "left" }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{ display: { xs: "block", md: "none" } }}
-              >
-                {pages.map((item) => (
-                  <MenuItem
-                    key={item.path}
-                    onClick={() => {
-                      handleCloseNavMenu();
-                      navigate(item.path);
-                    }}
-                  >
-                    <Typography>{item.label}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
             </Box>
 
             {/* Logo */}
@@ -111,36 +127,38 @@ export const Header = () => {
               src="./logo.png"
               alt="logo"
               sx={{
-                height: { xs: 50, md: 90 },
+                height: { xs: 40, md: 70 },
                 flexShrink: 0,
+                mr: 2,
               }}
             />
 
-            {/* Menu desktop */}
+            {/* Desktop navigation */}
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 1 }}>
               {pages.map((page) => (
                 <Button
-                  key={page.label}
+                  key={page.path}
                   onClick={() => navigate(page.path)}
                   sx={{ color: "white" }}
+                  startIcon={page.icon}
                 >
                   {page.label}
                 </Button>
               ))}
             </Box>
 
-            {/* Barre de recherche (toujours visible) */}
+            {/* Search */}
             <Box
               sx={{
-                display: "flex",
-                alignItems: "center",
-                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                flexGrow: 1,
+                mx: "auto",
+                maxWidth: { xs: "100%", sm: 400 },
+                backgroundColor: "rgba(255,255,255,0.15)",
                 borderRadius: 1,
                 px: 1.5,
                 py: 0.5,
-                flexGrow: { xs: 1, md: 1 },
-                maxWidth: 400,
-                mx: { xs: 1, md: 0 },
+                display: "flex",
+                alignItems: "center",
               }}
             >
               <Search sx={{ mr: 1 }} />
@@ -150,61 +168,66 @@ export const Header = () => {
               />
             </Box>
 
-            {/* Connexion / Profil */}
-            <Box sx={{ flexShrink: 0 }}>
+            {/* Profile / Auth actions */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {isAuth && profile ? (
                 <>
                   <Tooltip title={t("components.header.account")}>
-                    <IconButton onClick={handleOpenUserMenu} color="inherit">
+                    <IconButton
+                      onClick={(e) => setAnchorElUser(e.currentTarget)}
+                      color="inherit"
+                    >
                       {profile.avatar ? (
                         <Avatar
                           alt={profile.username}
                           src={`${
                             import.meta.env.VITE_BACK_END_URL
                           }uploads/profile-pictures/${profile.avatar}`}
+                          sx={{ width: 32, height: 32 }}
                         />
                       ) : (
                         <AccountCircle />
                       )}
                     </IconButton>
                   </Tooltip>
-                  <Menu
-                    anchorEl={anchorElUser}
-                    open={Boolean(anchorElUser)}
-                    onClose={handleCloseUserMenu}
+                  <IconButton
+                    onClick={() => navigate("/trips/create")}
+                    color="inherit"
                   >
-                    <MenuItem onClick={() => navigate("/profile")}>
-                      {t("components.header.account")}
-                    </MenuItem>
-                    <MenuItem onClick={handleLogout}>
-                      {t("components.header.logout")}
-                    </MenuItem>
-                  </Menu>
+                    <Add />
+                  </IconButton>
                 </>
               ) : (
-                <>
-                  {/* Icône pour mobile */}
-                  <IconButton
-                    onClick={() => navigate("/login")}
-                    color="inherit"
-                    sx={{ display: { xs: "flex", md: "none" } }}
-                  >
-                    <Login />
-                  </IconButton>
-                  {/* Texte pour desktop */}
-                  <Button
-                    onClick={() => navigate("/login")}
-                    color="inherit"
-                    sx={{ display: { xs: "none", md: "flex" } }}
-                  >
-                    {t("components.header.login")}
-                  </Button>
-                </>
+                <Button
+                  onClick={() => navigate("/login")}
+                  color="inherit"
+                  sx={{ display: { xs: "none", md: "flex" } }}
+                  startIcon={<Login />}
+                >
+                  {t("components.header.login")}
+                </Button>
               )}
             </Box>
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      {/* Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: "block", md: "none" },
+          "& .MuiDrawer-paper": {
+            backgroundColor: "rgba(0, 0, 0, 0.4)",
+            backdropFilter: "blur(6px)",
+            color: "white",
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+    </>
   );
 };

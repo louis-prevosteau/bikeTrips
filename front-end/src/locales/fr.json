@@ -7,5 +7,14 @@
       "logout": "Se Déconnecter",
       "login": "Se Connecter"
     }
+  },
+  "pages": {
+    "home": {
+      "welcome": "Bienvenue sur BaïkRaïdR",
+      "subtitle": "Explorez ou créez des trips pour vos prochaines aventures à vélo.",
+      "see": "Voir les itinéraires",
+      "login": "Se Connecter",
+      "create" : "Publier un itinéraire"
+    }
   }
 }
