@@ -6,6 +6,11 @@
       "account": "Mon compte",
       "logout": "Se Déconnecter",
       "login": "Se Connecter"
+    },
+    "auth": {
+      "title": "Inscription / Connexion",
+      "register": "S'inscrire",
+      "login": "Se connecter"
     }
   },
   "pages": {
@@ -15,6 +20,17 @@
       "see": "Voir les itinéraires",
       "login": "Se Connecter",
       "create" : "Publier un itinéraire"
+    }
+  },
+  "forms": {
+    "auth": {
+      "fields": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "username": "Pseudo",
+        "email": "Email",
+        "password": "Mot de passe"
+      }
     }
   }
 }

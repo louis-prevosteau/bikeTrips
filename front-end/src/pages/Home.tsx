@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux";
@@ -7,8 +7,12 @@ import { Add, Login, Map } from "@mui/icons-material";
 import { green } from "@mui/material/colors";
 import Background from "../assets/backgrounds/cycling-sunset.png";
 import { useTranslation } from "react-i18next";
+import { AuthDialog } from "../components";
 
 export const Home = () => {
+
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
   const navigate = useNavigate();
   const { isAuth } = useSelector((state: RootState) => state);
   const { t } = useTranslation();
@@ -101,13 +105,14 @@ export const Home = () => {
                 },
               }}
               startIcon={<Login />}
-              onClick={() => navigate("/login")}
+              onClick={() => setAuthDialogOpen(true)}
             >
               {t('pages.home.login')}
             </Button>
           )}
         </Box>
       </Container>
+      <AuthDialog open={authDialogOpen} onClose={() => setAuthDialogOpen(false)} />
     </Box>
   );
 };

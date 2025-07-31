@@ -36,10 +36,12 @@ import { useTranslation } from "react-i18next";
 import type { AppDispatch, RootState } from "../../redux";
 import { logout } from "../../redux/auth/auth.actions";
 import { lightGreen } from "@mui/material/colors";
+import { AuthDialog } from "../manager/AuthDialog";
 
 export const Header = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -199,7 +201,7 @@ export const Header = () => {
                 </>
               ) : (
                 <Button
-                  onClick={() => navigate("/login")}
+                  onClick={() => setAuthDialogOpen(true)}
                   color="inherit"
                   sx={{ display: { xs: "none", md: "flex" } }}
                   startIcon={<Login />}
@@ -228,6 +230,7 @@ export const Header = () => {
       >
         {drawer}
       </Drawer>
+      <AuthDialog open={authDialogOpen} onClose={() => setAuthDialogOpen(false)} />
     </>
   );
 };
