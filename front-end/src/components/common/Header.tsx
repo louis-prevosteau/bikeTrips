@@ -17,6 +17,8 @@ import {
   Tooltip,
   Typography,
   Divider,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 
 import {
@@ -47,6 +49,8 @@ export const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { isAuth, profile } = useSelector((state: RootState) => state);
+  const token = localStorage.getItem("token");
+  const isLoggedIn = isAuth || Boolean(token);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -55,6 +59,7 @@ export const Header = () => {
   const handleLogout = () => {
     dispatch(logout());
     setMobileOpen(false);
+    setAnchorElUser(null);
   };
 
   const pages = [
@@ -67,15 +72,22 @@ export const Header = () => {
         {pages.map((item) => (
           <ListItem key={item.path} disablePadding>
             <ListItemButton onClick={() => navigate(item.path)}>
-              <ListItemIcon sx={{ color: lightGreen[700] }}>{item.icon}</ListItemIcon>
+              <ListItemIcon sx={{ color: lightGreen[700] }}>
+                {item.icon}
+              </ListItemIcon>
               <ListItemText primary={item.label} />
             </ListItemButton>
           </ListItem>
         ))}
         <Divider />
-        {!isAuth ? (
+        {!isLoggedIn ? (
           <ListItem disablePadding>
-            <ListItemButton onClick={() => navigate("/login")}>
+            <ListItemButton
+              onClick={() => {
+                setAuthDialogOpen(true);
+                setMobileOpen(false);
+              }}
+            >
               <ListItemIcon sx={{ color: lightGreen[700] }}>
                 <Login />
               </ListItemIcon>
@@ -86,15 +98,23 @@ export const Header = () => {
           <>
             <ListItem disablePadding>
               <ListItemButton onClick={() => navigate("/profile")}>
-                <ListItemIcon>
+                <ListItemIcon sx={{ color: lightGreen[700] }}>
                   <Person />
                 </ListItemIcon>
                 <ListItemText primary={t("components.header.account")} />
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
+              <ListItemButton onClick={() => navigate("/trips/create")}>
+                <ListItemIcon sx={{ color: lightGreen[700] }}>
+                  <Add />
+                </ListItemIcon>
+                <ListItemText primary={t("components.header.create")} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding>
               <ListItemButton onClick={handleLogout}>
-                <ListItemIcon>
+                <ListItemIcon sx={{ color: lightGreen[700] }}>
                   <Logout />
                 </ListItemIcon>
                 <ListItemText primary={t("components.header.logout")} />
@@ -172,14 +192,14 @@ export const Header = () => {
 
             {/* Profile / Auth actions */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {isAuth && profile ? (
+              {isLoggedIn ? (
                 <>
                   <Tooltip title={t("components.header.account")}>
                     <IconButton
                       onClick={(e) => setAnchorElUser(e.currentTarget)}
                       color="inherit"
                     >
-                      {profile.avatar ? (
+                      {profile?.avatar ? (
                         <Avatar
                           alt={profile.username}
                           src={`${
@@ -192,12 +212,38 @@ export const Header = () => {
                       )}
                     </IconButton>
                   </Tooltip>
-                  <IconButton
-                    onClick={() => navigate("/trips/create")}
-                    color="inherit"
+
+                  <Menu
+                    anchorEl={anchorElUser}
+                    open={Boolean(anchorElUser)}
+                    onClose={() => setAnchorElUser(null)}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
                   >
-                    <Add />
-                  </IconButton>
+                    <MenuItem
+                      onClick={() => {
+                        navigate("/profile");
+                        setAnchorElUser(null);
+                      }}
+                    >
+                      <Person sx={{ mr: 1 }} />
+                      {t("components.header.account")}
+                    </MenuItem>
+                    <MenuItem onClick={handleLogout}>
+                      <Logout sx={{ mr: 1 }} />
+                      {t("components.header.logout")}
+                    </MenuItem>
+                  </Menu>
+
+                  <Tooltip title={t("components.header.create")}>
+                    <IconButton
+                      onClick={() => navigate("/trips/create")}
+                      color="inherit"
+                      sx={{ display: { xs: "none", md: "inline-flex" } }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Tooltip>
                 </>
               ) : (
                 <Button
@@ -230,7 +276,12 @@ export const Header = () => {
       >
         {drawer}
       </Drawer>
-      <AuthDialog open={authDialogOpen} onClose={() => setAuthDialogOpen(false)} />
+
+      {/* Auth Dialog */}
+      <AuthDialog
+        open={authDialogOpen}
+        onClose={() => setAuthDialogOpen(false)}
+      />
     </>
   );
 };

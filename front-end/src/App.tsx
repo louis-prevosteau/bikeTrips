@@ -15,7 +15,8 @@ import { Header } from "./components";
 import type { AppDispatch } from "./redux";
 import { useDispatch } from "react-redux";
 import { getProfile } from "./redux/users/users.actions";
-import './i18n';
+import "./i18n";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const isInitialRender = useRef(true);
@@ -48,6 +49,14 @@ const App = () => {
           </Routes>
         </Container>
       </BrowserRouter>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick={true}
+        pauseOnHover={false}
+        rtl={false}
+      />
     </div>
   );
 };

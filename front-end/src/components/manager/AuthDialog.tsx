@@ -78,28 +78,6 @@ export const AuthDialog = ({ open, onClose }: AuthDialogProps) => {
     dispatch(register(registerForm));
   };
 
-  const AuthTextField = ({
-    label,
-    type = "text",
-    value,
-    onChange,
-  }: {
-    label: string;
-    type?: string;
-    value: string;
-    onChange: (val: string) => void;
-  }) => (
-    <TextField
-      variant="filled"
-      type={type}
-      label={label}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      fullWidth
-      sx={{ mb: 2, input: { color: "white" }, label: { color: "white" } }}
-    />
-  );
-
   const renderFields = <T extends Record<string, string>>(
     fields: { name: keyof T; label: string; type?: string }[],
     formData: T,
@@ -107,12 +85,14 @@ export const AuthDialog = ({ open, onClose }: AuthDialogProps) => {
   ) => (
     <>
       {fields.map(({ name, label, type }) => (
-        <AuthTextField
+        <TextField
           key={name as string}
           label={label}
           type={type}
           value={formData[name]}
-          onChange={(val) => handleInputChange(formSetter, name, val)}
+          onChange={(e) => handleInputChange(formSetter, name, e.target.value)}
+          fullWidth
+          sx={{ mb: 2, input: { color: "white" }, label: { color: "white" } }}
         />
       ))}
     </>

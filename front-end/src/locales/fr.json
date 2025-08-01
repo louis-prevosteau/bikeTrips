@@ -2,6 +2,7 @@
   "components": {
     "header": {
       "trips": "Itinéraires",
+      "create": "Publier un itinéraire",
       "search": "Rechercher...",
       "account": "Mon compte",
       "logout": "Se Déconnecter",
@@ -32,5 +33,16 @@
         "password": "Mot de passe"
       }
     }
+  },
+  "toasts": {
+    "authentication": "Connexion réussie",
+    "logout": "Déconnexion",
+    "httpErrors": {
+      "userExists": "Un utilisateur correspondant à cet email existe déjà",
+      "unknownUser": "Utilisateur inconnu"
+    },
+    "create": "Création réussie",
+    "update": "Mise à jour réussie",
+    "delete": "Suppression réussie"
   }
 }
